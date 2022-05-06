@@ -1,0 +1,1645 @@
+--------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/andreweeckman/Documents/Stata/mylog.log
+  log type:  text
+ opened on:   3 Jun 2020, 14:06:48
+
+. 
+. cd "/Users/andreweeckman/Desktop/"
+/Users/andreweeckman/Desktop
+
+. use "/Users/andreweeckman/Desktop/canadiancollege.dta"
+
+. 
+. tab sex, gen(gender)
+
+        sex |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          F |     21,897       62.60       62.60
+          M |     13,082       37.40      100.00
+------------+-----------------------------------
+      Total |     34,979      100.00
+
+. rename gender1 female
+
+. rename gender2 male
+
+. 
+. tab mtongue, gen(mtongue)
+
+    mtongue |      Freq.     Percent        Cum.
+------------+-----------------------------------
+    English |     25,082       71.71       71.71
+     French |        175        0.50       72.21
+      Other |      9,722       27.79      100.00
+------------+-----------------------------------
+      Total |     34,979      100.00
+
+. rename mtongue1 l_english
+
+. rename mtongue2 l_french
+
+. rename mtongue3 other
+
+. 
+. tab birthplace, gen(bp)
+
+ birthplace |      Freq.     Percent        Cum.
+------------+-----------------------------------
+    America |         65        0.19        0.19
+       Asia |      2,694        7.70        7.89
+     Canada |     30,724       87.84       95.72
+      Other |      1,496        4.28      100.00
+------------+-----------------------------------
+      Total |     34,979      100.00
+
+. rename bp1 bp_america
+
+. rename bp2 bp_asia
+
+. rename bp3 bp_canada
+
+. rename bp4 bp_other
+
+. 
+. sum
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+   GPA_year1 |     34,979    2.543184    .8228346          0        4.3
+   GPA_year2 |     34,979    2.587409    .8138102          0        4.3
+totcredits~1 |     34,979     4.60735    .4930009          3          6
+totcredits~2 |     34,979    4.342566    .8958458          0          9
+         sex |          0
+-------------+---------------------------------------------------------
+     mtongue |          0
+age_at_entry |     34,979    18.63504    .7347842         17         21
+     gradin4 |     22,262    .5444255    .4980337          0          1
+     gradin5 |     22,262    .7853293     .410603          0          1
+     gradin6 |     22,262    .8527536    .3543594          0          1
+-------------+---------------------------------------------------------
+   gpacutoff |     34,979     1.52135    .0409783        1.5        1.6
+probation_~1 |     34,979    .1141542     .318003          0          1
+probation_~2 |     34,979    .0403671    .1968215          0          1
+suspended_~1 |     34,979    .0000858    .0092607          0          1
+suspended_~2 |     34,979    .0416822    .1998647          0          1
+-------------+---------------------------------------------------------
+suspended_~r |     34,979    .0596644    .2368673          0          1
+     campus1 |     34,979    .6083936    .4881164          0          1
+     campus2 |     34,979    .1781069    .3826081          0          1
+     campus3 |     34,979    .2134995    .4097832          0          1
+ hsgrade_pct |     34,979    52.34315    28.52431          1        100
+-------------+---------------------------------------------------------
+  birthplace |          0
+      female |     34,979    .6260042    .4838694          0          1
+        male |     34,979    .3739958    .4838694          0          1
+   l_english |     34,979    .7170588    .4504345          0          1
+    l_french |     34,979     .005003    .0705558          0          1
+-------------+---------------------------------------------------------
+       other |     34,979    .2779382    .4479892          0          1
+  bp_america |     34,979    .0018583    .0430681          0          1
+     bp_asia |     34,979    .0770176    .2666232          0          1
+   bp_canada |     34,979    .8783556    .3268793          0          1
+    bp_other |     34,979    .0427685    .2023377          0          1
+
+. 
+. * How do externalities affect the GPA of students in the first year at college
+> ?
+. 
+. * Dependent Variables: GPA_year1
+. * Independent Variables: totcredits_year1 (for year 1), hsgrade_pct, campus2, 
+> campus3, female, l_english, l_french, bp_america, bp_asia, bp_canada, age_at_e
+> ntry
+. 
+. * OLS (Year 1):
+. 
+. ***** OLS (Only Demographics) ************************************************
+> *************************************
+. regress GPA_year1 i.female l_english l_french bp_america bp_asia bp_canada age
+> _at_entry
+
+      Source |       SS           df       MS      Number of obs   =    34,979
+-------------+----------------------------------   F(7, 34971)     =     46.56
+       Model |  218.675422         7   31.239346   Prob > F        =    0.0000
+    Residual |  23463.4175    34,971  .670939277   R-squared       =    0.0092
+-------------+----------------------------------   Adj R-squared   =    0.0090
+       Total |  23682.0929    34,978  .677056804   Root MSE        =    .81911
+
+------------------------------------------------------------------------------
+   GPA_year1 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    1.female |  -.0393282   .0090618    -4.34   0.000    -.0570896   -.0215668
+   l_english |  -.0256469   .0106303    -2.41   0.016    -.0464826   -.0048112
+    l_french |   .0672305   .0626036     1.07   0.283    -.0554745    .1899355
+  bp_america |   .1600014    .103882     1.54   0.124    -.0436106    .3636133
+     bp_asia |    .084933   .0264716     3.21   0.001     .0330479    .1368181
+   bp_canada |   .0123443   .0222185     0.56   0.578    -.0312047    .0558934
+age_at_entry |  -.1017503   .0059917   -16.98   0.000    -.1134942   -.0900065
+       _cons |   4.464298   .1143231    39.05   0.000     4.240221    4.688375
+------------------------------------------------------------------------------
+
+. ******************************************************************************
+> *************************************
+. 
+. 
+. ***** OLS (All Externalities) ************************************************
+> *************************************
+. gen sq_hsgrade_pct = hsgrade_pct * hsgrade_pct
+
+. gen sq_totalcreds = totcredits_year1 * totcredits_year1
+
+. gen lngpa = ln(GPA_year1)
+(85 missing values generated)
+
+. 
+. regress GPA_year1 totcredits_year1 hsgrade_pct campus2 campus3 i.female l_engl
+> ish l_french bp_america bp_asia bp_canada age_at_entry i.female#c.hsgrade_pct 
+> c.age_at_entry#c.hsgrade_pct i.female#c.totcredits_year1 c.hsgrade_pct#c.totcr
+> edits_year1 sq_totalcreds sq_hsgrade_pct
+
+      Source |       SS           df       MS      Number of obs   =    34,979
+-------------+----------------------------------   F(17, 34961)    =   1181.29
+       Model |  8640.19431        17  508.246724   Prob > F        =    0.0000
+    Residual |  15041.8986    34,961   .43024795   R-squared       =    0.3648
+-------------+----------------------------------   Adj R-squared   =    0.3645
+       Total |  23682.0929    34,978  .677056804   Root MSE        =    .65593
+
+-------------------------------------------------------------------------------
+    GPA_year1 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+totcredits_~1 |   .7186214   .1271613     5.65   0.000     .4693812    .9678616
+  hsgrade_pct |    .013707   .0034639     3.96   0.000     .0069176    .0204963
+      campus2 |   .0965684   .0100756     9.58   0.000     .0768199     .116317
+      campus3 |   .1471982     .00957    15.38   0.000     .1284407    .1659557
+     1.female |   .1152321   .0689346     1.67   0.095     -.019882    .2503462
+    l_english |  -.0001263   .0085884    -0.01   0.988    -.0169597    .0167072
+     l_french |   .0408251   .0501492     0.81   0.416    -.0574689    .1391192
+   bp_america |   .1270873   .0832071     1.53   0.127    -.0360012    .2901758
+      bp_asia |   -.008338   .0212393    -0.39   0.695    -.0499677    .0332917
+    bp_canada |  -.0136594   .0178064    -0.77   0.443    -.0485605    .0212417
+ age_at_entry |   .0093549   .0096697     0.97   0.333    -.0095981    .0283079
+              |
+       female#|
+c.hsgrade_pct |
+           1  |  -.0002987    .000269    -1.11   0.267     -.000826    .0002285
+              |
+           c. |
+ age_at_entry#|
+c.hsgrade_pct |  -.0004977   .0001644    -3.03   0.002      -.00082   -.0001755
+              |
+       female#|
+           c. |
+totcredits_~1 |
+           1  |  -.0378632   .0155978    -2.43   0.015    -.0684354    -.007291
+              |
+           c. |
+  hsgrade_pct#|
+           c. |
+totcredits_~1 |   .0012066   .0002901     4.16   0.000      .000638    .0017752
+              |
+sq_totalcreds |  -.0646251   .0146355    -4.42   0.000    -.0933111   -.0359391
+sq_hsgrade_~t |   .0000674   5.13e-06    13.15   0.000     .0000574    .0000775
+        _cons |  -.3132494   .3392085    -0.92   0.356    -.9781089    .3516102
+-------------------------------------------------------------------------------
+
+. 
+. predict gpa_hat, residuals
+
+. scatter gpa_hat hsgrade_pct, name("hsgrade")
+
+. scatter gpa_hat totcredits_year1, name("totcreds")
+
+. scatter gpa_hat age_at_entry, name("age")
+
+. 
+. margins, dydx(age_at_entry) at(female=(0 1) hsgrade_pct=(10(20)90))
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OLS
+
+Expression   : Linear prediction, predict()
+dy/dx w.r.t. : age_at_entry
+
+1._at        : hsgrade_pct     =          10
+               female          =           0
+
+2._at        : hsgrade_pct     =          10
+               female          =           1
+
+3._at        : hsgrade_pct     =          30
+               female          =           0
+
+4._at        : hsgrade_pct     =          30
+               female          =           1
+
+5._at        : hsgrade_pct     =          50
+               female          =           0
+
+6._at        : hsgrade_pct     =          50
+               female          =           1
+
+7._at        : hsgrade_pct     =          70
+               female          =           0
+
+8._at        : hsgrade_pct     =          70
+               female          =           1
+
+9._at        : hsgrade_pct     =          90
+               female          =           0
+
+10._at       : hsgrade_pct     =          90
+               female          =           1
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+age_at_entry |
+         _at |
+          1  |   .0043774   .0082885     0.53   0.597    -.0118683    .0206232
+          2  |   .0043774   .0082885     0.53   0.597    -.0118683    .0206232
+          3  |  -.0055776   .0059419    -0.94   0.348    -.0172239    .0060688
+          4  |  -.0055776   .0059419    -0.94   0.348    -.0172239    .0060688
+          5  |  -.0155325   .0048512    -3.20   0.001    -.0250411    -.006024
+          6  |  -.0155325   .0048512    -3.20   0.001    -.0250411    -.006024
+          7  |  -.0254875   .0057778    -4.41   0.000    -.0368122   -.0141628
+          8  |  -.0254875   .0057778    -4.41   0.000    -.0368122   -.0141628
+          9  |  -.0354425   .0080532    -4.40   0.000    -.0512269    -.019658
+         10  |  -.0354425   .0080532    -4.40   0.000    -.0512269    -.019658
+------------------------------------------------------------------------------
+
+. margins, at(age_at_entry=(17 21) female=(0 1) hsgrade_pct=(10(20)90)) vsquish 
+
+Predictive margins                              Number of obs     =     34,979
+Model VCE    : OLS
+
+Expression   : Linear prediction, predict()
+1._at        : hsgrade_pct     =          10
+               female          =           0
+               age_at_entry    =          17
+2._at        : hsgrade_pct     =          10
+               female          =           0
+               age_at_entry    =          21
+3._at        : hsgrade_pct     =          10
+               female          =           1
+               age_at_entry    =          17
+4._at        : hsgrade_pct     =          10
+               female          =           1
+               age_at_entry    =          21
+5._at        : hsgrade_pct     =          30
+               female          =           0
+               age_at_entry    =          17
+6._at        : hsgrade_pct     =          30
+               female          =           0
+               age_at_entry    =          21
+7._at        : hsgrade_pct     =          30
+               female          =           1
+               age_at_entry    =          17
+8._at        : hsgrade_pct     =          30
+               female          =           1
+               age_at_entry    =          21
+9._at        : hsgrade_pct     =          50
+               female          =           0
+               age_at_entry    =          17
+10._at       : hsgrade_pct     =          50
+               female          =           0
+               age_at_entry    =          21
+11._at       : hsgrade_pct     =          50
+               female          =           1
+               age_at_entry    =          17
+12._at       : hsgrade_pct     =          50
+               female          =           1
+               age_at_entry    =          21
+13._at       : hsgrade_pct     =          70
+               female          =           0
+               age_at_entry    =          17
+14._at       : hsgrade_pct     =          70
+               female          =           0
+               age_at_entry    =          21
+15._at       : hsgrade_pct     =          70
+               female          =           1
+               age_at_entry    =          17
+16._at       : hsgrade_pct     =          70
+               female          =           1
+               age_at_entry    =          21
+17._at       : hsgrade_pct     =          90
+               female          =           0
+               age_at_entry    =          17
+18._at       : hsgrade_pct     =          90
+               female          =           0
+               age_at_entry    =          21
+19._at       : hsgrade_pct     =          90
+               female          =           1
+               age_at_entry    =          17
+20._at       : hsgrade_pct     =          90
+               female          =           1
+               age_at_entry    =          21
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   2.153186   .0300783    71.59   0.000     2.094231     2.21214
+          2  |   2.170696   .0293499    73.96   0.000     2.113169    2.228222
+          3  |   2.090982   .0296247    70.58   0.000     2.032916    2.149047
+          4  |   2.108491   .0296742    71.05   0.000     2.050329    2.166654
+          5  |   2.369275   .0182227   130.02   0.000     2.333558    2.404992
+          6  |   2.346964   .0185789   126.32   0.000     2.310549     2.38338
+          7  |   2.301096   .0177468   129.66   0.000     2.266312     2.33588
+          8  |   2.278786    .018711   121.79   0.000     2.242112     2.31546
+          9  |   2.585363   .0102327   252.66   0.000     2.565307     2.60542
+         10  |   2.523233   .0127631   197.70   0.000     2.498217    2.548249
+         11  |    2.51121   .0093759   267.84   0.000     2.492833    2.529588
+         12  |    2.44908   .0124874   196.12   0.000     2.424605    2.473556
+         13  |   2.801452    .014921   187.75   0.000     2.772206    2.830698
+         14  |   2.699502   .0177364   152.20   0.000     2.664738    2.734266
+         15  |   2.721325   .0140178   194.13   0.000     2.693849      2.7488
+         16  |   2.619375   .0172644   151.72   0.000     2.585536    2.653214
+         17  |   3.017541   .0261886   115.22   0.000      2.96621    3.068871
+         18  |   2.875771   .0282882   101.66   0.000     2.820325    2.931217
+         19  |   2.931439   .0253125   115.81   0.000     2.881826    2.981053
+         20  |   2.789669   .0278654   100.11   0.000     2.735052    2.844286
+------------------------------------------------------------------------------
+
+. marginsplot, noci x(age_at_entry) recast(line) xlabel(17(1)21)
+
+  Variables that uniquely identify margins: age_at_entry female hsgrade_pct
+
+. graph export "age_hs.png", replace
+(file /Users/andreweeckman/Desktop/age_hs.png written in PNG format)
+
+. 
+. margins, dydx(female) at(hsgrade_pct=(10(20)90))
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OLS
+
+Expression   : Linear prediction, predict()
+dy/dx w.r.t. : 1.female
+
+1._at        : hsgrade_pct     =          10
+
+2._at        : hsgrade_pct     =          30
+
+3._at        : hsgrade_pct     =          50
+
+4._at        : hsgrade_pct     =          70
+
+5._at        : hsgrade_pct     =          90
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+0.female     |  (base outcome)
+-------------+----------------------------------------------------------------
+1.female     |
+         _at |
+          1  |  -.0622041   .0133523    -4.66   0.000     -.088375   -.0360331
+          2  |  -.0681784   .0093131    -7.32   0.000    -.0864324   -.0499244
+          3  |  -.0741528   .0072854   -10.18   0.000    -.0884323   -.0598732
+          4  |  -.0801271   .0087927    -9.11   0.000    -.0973611   -.0628931
+          5  |  -.0861014   .0126269    -6.82   0.000    -.1108505   -.0613523
+------------------------------------------------------------------------------
+Note: dy/dx for factor levels is the discrete change from the base level.
+
+. margins, at(female=(0 1) hsgrade_pct=(10(20)90)) vsquish 
+
+Predictive margins                              Number of obs     =     34,979
+Model VCE    : OLS
+
+Expression   : Linear prediction, predict()
+1._at        : hsgrade_pct     =          10
+               female          =           0
+2._at        : hsgrade_pct     =          10
+               female          =           1
+3._at        : hsgrade_pct     =          30
+               female          =           0
+4._at        : hsgrade_pct     =          30
+               female          =           1
+5._at        : hsgrade_pct     =          50
+               female          =           0
+6._at        : hsgrade_pct     =          50
+               female          =           1
+7._at        : hsgrade_pct     =          70
+               female          =           0
+8._at        : hsgrade_pct     =          70
+               female          =           1
+9._at        : hsgrade_pct     =          90
+               female          =           0
+10._at       : hsgrade_pct     =          90
+               female          =           1
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   2.160343   .0249271    86.67   0.000     2.111485    2.209201
+          2  |   2.098139   .0247624    84.73   0.000     2.049604    2.146674
+          3  |   2.360155    .014174   166.51   0.000     2.332374    2.387936
+          4  |   2.291977    .013885   165.07   0.000     2.264762    2.319192
+          5  |   2.559967    .006123   418.09   0.000     2.547966    2.571968
+          6  |   2.485814   .0049711   500.05   0.000     2.476071    2.495558
+          7  |   2.759779   .0114513   241.00   0.000     2.737334    2.782224
+          8  |   2.679652   .0104368   256.75   0.000     2.659195    2.700108
+          9  |   2.959591   .0219505   134.83   0.000     2.916567    3.002614
+         10  |   2.873489   .0211055   136.15   0.000     2.832122    2.914857
+------------------------------------------------------------------------------
+
+. marginsplot, noci x(female) recast(line) xlabel(0(1)1)
+
+  Variables that uniquely identify margins: female hsgrade_pct
+
+. graph export "effect_of_gender_hs.png", replace
+(file /Users/andreweeckman/Desktop/effect_of_gender_hs.png written in PNG format
+> )
+
+. 
+. 
+. margins, dydx(hsgrade_pct) at(female=(0 1) totcredits_year1=(3(1)6))
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OLS
+
+Expression   : Linear prediction, predict()
+dy/dx w.r.t. : hsgrade_pct
+
+1._at        : totcredits~1    =           3
+               female          =           0
+
+2._at        : totcredits~1    =           3
+               female          =           1
+
+3._at        : totcredits~1    =           4
+               female          =           0
+
+4._at        : totcredits~1    =           4
+               female          =           1
+
+5._at        : totcredits~1    =           5
+               female          =           0
+
+6._at        : totcredits~1    =           5
+               female          =           1
+
+7._at        : totcredits~1    =           6
+               female          =           0
+
+8._at        : totcredits~1    =           6
+               female          =           1
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+hsgrade_pct  |
+         _at |
+          1  |   .0080512   .0006272    12.84   0.000     .0068217    .0092806
+          2  |   .0077525   .0006114    12.68   0.000     .0065542    .0089507
+          3  |   .0092578   .0005454    16.97   0.000     .0081888    .0103267
+          4  |   .0089591   .0005351    16.74   0.000     .0079103    .0100078
+          5  |   .0104644   .0006081    17.21   0.000     .0092725    .0116563
+          6  |   .0101656    .000606    16.78   0.000     .0089779    .0113534
+          7  |    .011671   .0007813    14.94   0.000     .0101395    .0132024
+          8  |   .0113722   .0007851    14.48   0.000     .0098334    .0129111
+------------------------------------------------------------------------------
+
+. margins, at(hsgrade_pct=(10(10)90) totcredits_year1=(3(1)6) female=(0 1)) vsqu
+> ish 
+
+Predictive margins                              Number of obs     =     34,979
+Model VCE    : OLS
+
+Expression   : Linear prediction, predict()
+1._at        : totcredits~1    =           3
+               hsgrade_pct     =          10
+               female          =           0
+2._at        : totcredits~1    =           3
+               hsgrade_pct     =          10
+               female          =           1
+3._at        : totcredits~1    =           3
+               hsgrade_pct     =          20
+               female          =           0
+4._at        : totcredits~1    =           3
+               hsgrade_pct     =          20
+               female          =           1
+5._at        : totcredits~1    =           3
+               hsgrade_pct     =          30
+               female          =           0
+6._at        : totcredits~1    =           3
+               hsgrade_pct     =          30
+               female          =           1
+7._at        : totcredits~1    =           3
+               hsgrade_pct     =          40
+               female          =           0
+8._at        : totcredits~1    =           3
+               hsgrade_pct     =          40
+               female          =           1
+9._at        : totcredits~1    =           3
+               hsgrade_pct     =          50
+               female          =           0
+10._at       : totcredits~1    =           3
+               hsgrade_pct     =          50
+               female          =           1
+11._at       : totcredits~1    =           3
+               hsgrade_pct     =          60
+               female          =           0
+12._at       : totcredits~1    =           3
+               hsgrade_pct     =          60
+               female          =           1
+13._at       : totcredits~1    =           3
+               hsgrade_pct     =          70
+               female          =           0
+14._at       : totcredits~1    =           3
+               hsgrade_pct     =          70
+               female          =           1
+15._at       : totcredits~1    =           3
+               hsgrade_pct     =          80
+               female          =           0
+16._at       : totcredits~1    =           3
+               hsgrade_pct     =          80
+               female          =           1
+17._at       : totcredits~1    =           3
+               hsgrade_pct     =          90
+               female          =           0
+18._at       : totcredits~1    =           3
+               hsgrade_pct     =          90
+               female          =           1
+19._at       : totcredits~1    =           4
+               hsgrade_pct     =          10
+               female          =           0
+20._at       : totcredits~1    =           4
+               hsgrade_pct     =          10
+               female          =           1
+21._at       : totcredits~1    =           4
+               hsgrade_pct     =          20
+               female          =           0
+22._at       : totcredits~1    =           4
+               hsgrade_pct     =          20
+               female          =           1
+23._at       : totcredits~1    =           4
+               hsgrade_pct     =          30
+               female          =           0
+24._at       : totcredits~1    =           4
+               hsgrade_pct     =          30
+               female          =           1
+25._at       : totcredits~1    =           4
+               hsgrade_pct     =          40
+               female          =           0
+26._at       : totcredits~1    =           4
+               hsgrade_pct     =          40
+               female          =           1
+27._at       : totcredits~1    =           4
+               hsgrade_pct     =          50
+               female          =           0
+28._at       : totcredits~1    =           4
+               hsgrade_pct     =          50
+               female          =           1
+29._at       : totcredits~1    =           4
+               hsgrade_pct     =          60
+               female          =           0
+30._at       : totcredits~1    =           4
+               hsgrade_pct     =          60
+               female          =           1
+31._at       : totcredits~1    =           4
+               hsgrade_pct     =          70
+               female          =           0
+32._at       : totcredits~1    =           4
+               hsgrade_pct     =          70
+               female          =           1
+33._at       : totcredits~1    =           4
+               hsgrade_pct     =          80
+               female          =           0
+34._at       : totcredits~1    =           4
+               hsgrade_pct     =          80
+               female          =           1
+35._at       : totcredits~1    =           4
+               hsgrade_pct     =          90
+               female          =           0
+36._at       : totcredits~1    =           4
+               hsgrade_pct     =          90
+               female          =           1
+37._at       : totcredits~1    =           5
+               hsgrade_pct     =          10
+               female          =           0
+38._at       : totcredits~1    =           5
+               hsgrade_pct     =          10
+               female          =           1
+39._at       : totcredits~1    =           5
+               hsgrade_pct     =          20
+               female          =           0
+40._at       : totcredits~1    =           5
+               hsgrade_pct     =          20
+               female          =           1
+41._at       : totcredits~1    =           5
+               hsgrade_pct     =          30
+               female          =           0
+42._at       : totcredits~1    =           5
+               hsgrade_pct     =          30
+               female          =           1
+43._at       : totcredits~1    =           5
+               hsgrade_pct     =          40
+               female          =           0
+44._at       : totcredits~1    =           5
+               hsgrade_pct     =          40
+               female          =           1
+45._at       : totcredits~1    =           5
+               hsgrade_pct     =          50
+               female          =           0
+46._at       : totcredits~1    =           5
+               hsgrade_pct     =          50
+               female          =           1
+47._at       : totcredits~1    =           5
+               hsgrade_pct     =          60
+               female          =           0
+48._at       : totcredits~1    =           5
+               hsgrade_pct     =          60
+               female          =           1
+49._at       : totcredits~1    =           5
+               hsgrade_pct     =          70
+               female          =           0
+50._at       : totcredits~1    =           5
+               hsgrade_pct     =          70
+               female          =           1
+51._at       : totcredits~1    =           5
+               hsgrade_pct     =          80
+               female          =           0
+52._at       : totcredits~1    =           5
+               hsgrade_pct     =          80
+               female          =           1
+53._at       : totcredits~1    =           5
+               hsgrade_pct     =          90
+               female          =           0
+54._at       : totcredits~1    =           5
+               hsgrade_pct     =          90
+               female          =           1
+55._at       : totcredits~1    =           6
+               hsgrade_pct     =          10
+               female          =           0
+56._at       : totcredits~1    =           6
+               hsgrade_pct     =          10
+               female          =           1
+57._at       : totcredits~1    =           6
+               hsgrade_pct     =          20
+               female          =           0
+58._at       : totcredits~1    =           6
+               hsgrade_pct     =          20
+               female          =           1
+59._at       : totcredits~1    =           6
+               hsgrade_pct     =          30
+               female          =           0
+60._at       : totcredits~1    =           6
+               hsgrade_pct     =          30
+               female          =           1
+61._at       : totcredits~1    =           6
+               hsgrade_pct     =          40
+               female          =           0
+62._at       : totcredits~1    =           6
+               hsgrade_pct     =          40
+               female          =           1
+63._at       : totcredits~1    =           6
+               hsgrade_pct     =          50
+               female          =           0
+64._at       : totcredits~1    =           6
+               hsgrade_pct     =          50
+               female          =           1
+65._at       : totcredits~1    =           6
+               hsgrade_pct     =          60
+               female          =           0
+66._at       : totcredits~1    =           6
+               hsgrade_pct     =          60
+               female          =           1
+67._at       : totcredits~1    =           6
+               hsgrade_pct     =          70
+               female          =           0
+68._at       : totcredits~1    =           6
+               hsgrade_pct     =          70
+               female          =           1
+69._at       : totcredits~1    =           6
+               hsgrade_pct     =          80
+               female          =           0
+70._at       : totcredits~1    =           6
+               hsgrade_pct     =          80
+               female          =           1
+71._at       : totcredits~1    =           6
+               hsgrade_pct     =          90
+               female          =           0
+72._at       : totcredits~1    =           6
+               hsgrade_pct     =          90
+               female          =           1
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .9858726   .2075358     4.75   0.000     .5790959    1.392649
+          2  |    .984528   .2076101     4.74   0.000     .5776055     1.39145
+          3  |   1.066384   .2080988     5.12   0.000     .6585042    1.474265
+          4  |   1.062053   .2081153     5.10   0.000       .65414    1.469965
+          5  |   1.146896   .2088487     5.49   0.000     .7375461    1.556246
+          6  |   1.139577   .2087983     5.46   0.000     .7303258    1.548828
+          7  |   1.227408   .2097835     5.85   0.000     .8162255     1.63859
+          8  |   1.217102   .2096574     5.81   0.000     .8061664    1.628037
+          9  |    1.30792   .2109008     6.20   0.000     .8945472    1.721292
+         10  |   1.294626   .2106905     6.14   0.000     .8816661    1.707586
+         11  |   1.388431   .2121978     6.54   0.000     .9725169    1.804346
+         12  |   1.372151    .211895     6.48   0.000     .9568298    1.787472
+         13  |   1.468943   .2136711     6.87   0.000     1.050141    1.887745
+         14  |   1.449675   .2132681     6.80   0.000     1.031663    1.867688
+         15  |   1.549455   .2153171     7.20   0.000     1.127426    1.971483
+         16  |     1.5272   .2148064     7.11   0.000     1.106173    1.948227
+         17  |   1.629966   .2171318     7.51   0.000     1.204381    2.055552
+         18  |   1.604724   .2165064     7.41   0.000     1.180365    2.029084
+         19  |    1.71656   .0821244    20.90   0.000     1.555594    1.877526
+         20  |   1.677352   .0822016    20.41   0.000     1.516234     1.83847
+         21  |   1.809138    .081091    22.31   0.000     1.650197    1.968079
+         22  |   1.766943   .0811404    21.78   0.000     1.607905     1.92598
+         23  |   1.901715    .080415    23.65   0.000     1.744099    2.059331
+         24  |   1.856533   .0804219    23.08   0.000     1.698904    2.014163
+         25  |   1.994293   .0801055    24.90   0.000     1.837284    2.151302
+         26  |   1.946124   .0800553    24.31   0.000     1.789213    2.103035
+         27  |   2.086871   .0801667    26.03   0.000     1.929742       2.244
+         28  |   2.035714   .0800456    25.43   0.000     1.878822    2.192606
+         29  |   2.179449   .0805977    27.04   0.000     2.021474    2.337423
+         30  |   2.125305   .0803928    26.44   0.000     1.967732    2.282877
+         31  |   2.272026   .0813927    27.91   0.000     2.112494    2.431558
+         32  |   2.214895   .0810923    27.31   0.000     2.055952    2.373839
+         33  |   2.364604   .0825412    28.65   0.000     2.202821    2.526387
+         34  |   2.304486   .0821352    28.06   0.000     2.143498    2.465473
+         35  |   2.457182   .0840286    29.24   0.000     2.292483     2.62188
+         36  |   2.394076   .0835085    28.67   0.000     2.230397    2.557756
+         37  |   2.447247   .0554444    44.14   0.000     2.338575     2.55592
+         38  |   2.370176   .0552126    42.93   0.000     2.261958    2.478395
+         39  |   2.551891   .0534116    47.78   0.000     2.447203    2.656579
+         40  |   2.471833    .053185    46.48   0.000     2.367589    2.576077
+         41  |   2.656535   .0520141    51.07   0.000     2.554585    2.758484
+         42  |   2.573489   .0517909    49.69   0.000     2.471978    2.675001
+         43  |   2.761178   .0513039    53.82   0.000     2.660621    2.861736
+         44  |   2.675146   .0510822    52.37   0.000     2.575023    2.775269
+         45  |   2.865822   .0513097    55.85   0.000     2.765253    2.966391
+         46  |   2.776802   .0510874    54.35   0.000     2.676669    2.876935
+         47  |   2.970466    .052031    57.09   0.000     2.868483    3.072448
+         48  |   2.878459   .0518064    55.56   0.000     2.776917    2.980001
+         49  |   3.075109    .053439    57.54   0.000     2.970367    3.179852
+         50  |   2.980115   .0532102    56.01   0.000     2.875822    3.084409
+         51  |   3.179753   .0554815    57.31   0.000     3.071008    3.288498
+         52  |   3.081772   .0552466    55.78   0.000     2.973487    3.190057
+         53  |   3.284397   .0580914    56.54   0.000     3.170536    3.398258
+         54  |   3.183428   .0578488    55.03   0.000     3.070043    3.296814
+         55  |   3.177935   .1790533    17.75   0.000     2.826985    3.528885
+         56  |   3.063001   .1788181    17.13   0.000     2.712511     3.41349
+         57  |   3.294644   .1792658    18.38   0.000     2.943278    3.646011
+         58  |   3.176723   .1790157    17.75   0.000     2.825847    3.527599
+         59  |   3.411354   .1798178    18.97   0.000     3.058906    3.763803
+         60  |   3.290445   .1795566    18.33   0.000     2.938509    3.642382
+         61  |   3.528064   .1807062    19.52   0.000     3.173874    3.882254
+         62  |   3.404168   .1804379    18.87   0.000     3.050504    3.757832
+         63  |   3.644773   .1819262    20.03   0.000     3.288192    4.001354
+         64  |    3.51789   .1816546    19.37   0.000     3.161842    3.873939
+         65  |   3.761483    .183471    20.50   0.000     3.401874    4.121092
+         66  |   3.631613      .1832    19.82   0.000     3.272535    3.990691
+         67  |   3.878193   .1853327    20.93   0.000     3.514935    4.241451
+         68  |   3.745335   .1850658    20.24   0.000       3.3826     4.10807
+         69  |   3.994902   .1875017    21.31   0.000     3.627393    4.362412
+         70  |   3.859058   .1872425    20.61   0.000     3.492056    4.226059
+         71  |   4.111612   .1899675    21.64   0.000     3.739269    4.483954
+         72  |    3.97278   .1897194    20.94   0.000     3.600924    4.344636
+------------------------------------------------------------------------------
+
+. marginsplot, noci x(hsgrade_pct) recast(line) xlabel(10(10)90)
+
+  Variables that uniquely identify margins: hsgrade_pct totcredits_year1
+      female
+
+. graph export "hs_creds.png", replace
+(file /Users/andreweeckman/Desktop/hs_creds.png written in PNG format)
+
+. 
+. margins, dydx(female) at(totcredits_year1=(3(1)6))
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OLS
+
+Expression   : Linear prediction, predict()
+dy/dx w.r.t. : 1.female
+
+1._at        : totcredits~1    =           3
+
+2._at        : totcredits~1    =           4
+
+3._at        : totcredits~1    =           5
+
+4._at        : totcredits~1    =           6
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+0.female     |  (base outcome)
+-------------+----------------------------------------------------------------
+1.female     |
+         _at |
+          1  |  -.0139933   .0262164    -0.53   0.594    -.0653782    .0373917
+          2  |  -.0518565   .0120359    -4.31   0.000    -.0754473   -.0282657
+          3  |  -.0897197   .0094346    -9.51   0.000    -.1082117   -.0712277
+          4  |  -.1275829   .0227978    -5.60   0.000    -.1722673   -.0828984
+------------------------------------------------------------------------------
+Note: dy/dx for factor levels is the discrete change from the base level.
+
+. margins, at(female=(0 1) totcredits_year1=(3(1)6)) vsquish 
+
+Predictive margins                              Number of obs     =     34,979
+Model VCE    : OLS
+
+Expression   : Linear prediction, predict()
+1._at        : totcredits~1    =           3
+               female          =           0
+2._at        : totcredits~1    =           3
+               female          =           1
+3._at        : totcredits~1    =           4
+               female          =           0
+4._at        : totcredits~1    =           4
+               female          =           1
+5._at        : totcredits~1    =           5
+               female          =           0
+6._at        : totcredits~1    =           5
+               female          =           1
+7._at        : totcredits~1    =           6
+               female          =           0
+8._at        : totcredits~1    =           6
+               female          =           1
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   1.328016   .2111837     6.29   0.000     .9140896    1.741943
+          2  |   1.314023   .2109526     6.23   0.000     .9005493    1.727497
+          3  |   2.109795    .080229    26.30   0.000     1.952543    2.267046
+          4  |   2.057938   .0800899    25.70   0.000      1.90096    2.214917
+          5  |   2.891573   .0514184    56.24   0.000     2.790792    2.992355
+          6  |   2.801854   .0511966    54.73   0.000     2.701507    2.902201
+          7  |   3.673352   .1822636    20.15   0.000     3.316109    4.030594
+          8  |   3.545769   .1819921    19.48   0.000     3.189059    3.902479
+------------------------------------------------------------------------------
+
+. marginsplot, noci x(female) recast(line) xlabel(0(1)1)
+
+  Variables that uniquely identify margins: female totcredits_year1
+
+. graph export "effect_of_gender_creds.png", replace
+(file /Users/andreweeckman/Desktop/effect_of_gender_creds.png written in PNG for
+> mat)
+
+. ******************************************************************************
+> *************************************
+. 
+. ***** GENERATE DUMMY VARIABLE ABOVE_AVG **************************************
+> *************************************
+. egen meanGPA = mean(GPA_year1)
+
+. gen above_avg = 0
+
+. replace above_avg = 1 if GPA_year1 > meanGPA
+(18,132 real changes made)
+
+. replace above_avg = 0 if GPA_year1 < meanGPA
+(0 real changes made)
+
+. 
+. sum above_avg
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+   above_avg |     34,979    .5183682    .4996696          0          1
+
+. ******************************************************************************
+> *************************************
+. 
+. ***** PROBIT REGRESSION ******************************************************
+> *************************************
+. probit above_avg totcredits_year1 hsgrade_pct campus2 campus3 i.female l_engli
+> sh l_french bp_america bp_asia bp_canada age_at_entry i.female#c.hsgrade_pct c
+> .age_at_entry#c.hsgrade_pct sq_hsgrade_pct sq_totalcreds
+
+Iteration 0:   log likelihood = -24221.987  
+Iteration 1:   log likelihood = -19493.573  
+Iteration 2:   log likelihood = -19479.211  
+Iteration 3:   log likelihood = -19479.199  
+Iteration 4:   log likelihood = -19479.199  
+
+Probit regression                               Number of obs     =     34,979
+                                                LR chi2(15)       =    9485.58
+                                                Prob > chi2       =     0.0000
+Log likelihood = -19479.199                     Pseudo R2         =     0.1958
+
+-------------------------------------------------------------------------------
+    above_avg |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+totcredits_~1 |   .5952383   .2731429     2.18   0.029     .0598879    1.130589
+  hsgrade_pct |   .0352854   .0072112     4.89   0.000     .0211517    .0494192
+      campus2 |   .1304656   .0209686     6.22   0.000     .0893679    .1715633
+      campus3 |    .181025   .0198885     9.10   0.000     .1420442    .2200058
+     1.female |  -.1333844   .0326834    -4.08   0.000    -.1974428    -.069326
+    l_english |  -.0064547   .0179681    -0.36   0.719    -.0416714    .0287621
+     l_french |  -.0626042   .1040048    -0.60   0.547    -.2664499    .1412415
+   bp_america |   .2805556   .1765725     1.59   0.112    -.0655201    .6266312
+      bp_asia |  -.0326704   .0445317    -0.73   0.463     -.119951    .0546102
+    bp_canada |  -.0368023   .0372127    -0.99   0.323    -.1097379    .0361333
+ age_at_entry |     .04943   .0209922     2.35   0.019     .0082861    .0905739
+              |
+       female#|
+c.hsgrade_pct |
+           1  |  -.0000661   .0005814    -0.11   0.910    -.0012056    .0010734
+              |
+           c. |
+ age_at_entry#|
+c.hsgrade_pct |   -.001134   .0003726    -3.04   0.002    -.0018642   -.0004037
+              |
+sq_hsgrade_~t |   .0001035    .000011     9.42   0.000     .0000819     .000125
+sq_totalcreds |   -.038545   .0306498    -1.26   0.209    -.0986176    .0215276
+        _cons |  -3.811024   .7362836    -5.18   0.000    -5.254113   -2.367935
+-------------------------------------------------------------------------------
+
+. 
+. margins, dydx(hsgrade_pct) at(totcredits_year1 campus2 campus3 female l_englis
+> h l_french bp_america bp_asia bp_canada age_at_entry)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : hsgrade_pct
+at           : totcredits~1    =     4.60735 (mean)
+               campus2         =    .1781069 (mean)
+               campus3         =    .2134995 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_english       =    .7170588 (mean)
+               l_french        =     .005003 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_asia         =    .0770176 (mean)
+               bp_canada       =    .8783556 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ hsgrade_pct |   .0045865   .0003742    12.26   0.000      .003853      .00532
+------------------------------------------------------------------------------
+
+. margins, dydx(campus2) at(totcredits_year1 campus3 female l_english l_french b
+> p_america bp_asia bp_canada age_at_entry hsgrade_pct)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : campus2
+at           : totcredits~1    =     4.60735 (mean)
+               hsgrade_pct     =    52.34315 (mean)
+               campus3         =    .2134995 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_english       =    .7170588 (mean)
+               l_french        =     .005003 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_asia         =    .0770176 (mean)
+               bp_canada       =    .8783556 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+     campus2 |   .0497074   .0080551     6.17   0.000     .0339197    .0654952
+------------------------------------------------------------------------------
+
+. margins, dydx(campus3) at(totcredits_year1 female l_english l_french bp_americ
+> a bp_asia bp_canada age_at_entry hsgrade_pct campus2)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : campus3
+at           : totcredits~1    =     4.60735 (mean)
+               hsgrade_pct     =    52.34315 (mean)
+               campus2         =    .1781069 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_english       =    .7170588 (mean)
+               l_french        =     .005003 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_asia         =    .0770176 (mean)
+               bp_canada       =    .8783556 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+     campus3 |   .0689342   .0075465     9.13   0.000     .0541433    .0837251
+------------------------------------------------------------------------------
+
+. margins, dydx(female) at(totcredits_year1 l_english l_french bp_america bp_asi
+> a bp_canada age_at_entry hsgrade_pct campus2 campus3)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : 1.female
+at           : totcredits~1    =     4.60735 (mean)
+               hsgrade_pct     =    52.34315 (mean)
+               campus2         =    .1781069 (mean)
+               campus3         =    .2134995 (mean)
+               l_english       =    .7170588 (mean)
+               l_french        =     .005003 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_asia         =    .0770176 (mean)
+               bp_canada       =    .8783556 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    1.female |  -.0519929   .0058409    -8.90   0.000    -.0634408   -.0405449
+------------------------------------------------------------------------------
+Note: dy/dx for factor levels is the discrete change from the base level.
+
+. margins, dydx(l_english) at(totcredits_year1 l_french bp_america bp_asia bp_ca
+> nada age_at_entry hsgrade_pct campus2 campus3 female)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : l_english
+at           : totcredits~1    =     4.60735 (mean)
+               hsgrade_pct     =    52.34315 (mean)
+               campus2         =    .1781069 (mean)
+               campus3         =    .2134995 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_french        =     .005003 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_asia         =    .0770176 (mean)
+               bp_canada       =    .8783556 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   l_english |  -.0024569   .0068392    -0.36   0.719    -.0158614    .0109477
+------------------------------------------------------------------------------
+
+. margins, dydx(l_french) at(totcredits_year1 bp_america bp_asia bp_canada age_a
+> t_entry hsgrade_pct campus2 campus3 female l_english)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : l_french
+at           : totcredits~1    =     4.60735 (mean)
+               hsgrade_pct     =    52.34315 (mean)
+               campus2         =    .1781069 (mean)
+               campus3         =    .2134995 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_english       =    .7170588 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_asia         =    .0770176 (mean)
+               bp_canada       =    .8783556 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    l_french |   -.023831   .0395887    -0.60   0.547    -.1014233    .0537613
+------------------------------------------------------------------------------
+
+. margins, dydx(bp_america) at(totcredits_year1 bp_asia bp_canada age_at_entry h
+> sgrade_pct campus2 campus3 female l_english l_french)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : bp_america
+at           : totcredits~1    =     4.60735 (mean)
+               hsgrade_pct     =    52.34315 (mean)
+               campus2         =    .1781069 (mean)
+               campus3         =    .2134995 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_english       =    .7170588 (mean)
+               l_french        =     .005003 (mean)
+               bp_asia         =    .0770176 (mean)
+               bp_canada       =    .8783556 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+  bp_america |   .1067887   .0672055     1.59   0.112    -.0249318    .2385091
+------------------------------------------------------------------------------
+
+. margins, dydx(bp_asia) at(totcredits_year1 bp_canada age_at_entry hsgrade_pct 
+> campus2 campus3 female l_english l_french bp_america)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : bp_asia
+at           : totcredits~1    =     4.60735 (mean)
+               hsgrade_pct     =    52.34315 (mean)
+               campus2         =    .1781069 (mean)
+               campus3         =    .2134995 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_english       =    .7170588 (mean)
+               l_french        =     .005003 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_canada       =    .8783556 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+     bp_asia |  -.0124385   .0169565    -0.73   0.463    -.0456728    .0207957
+------------------------------------------------------------------------------
+
+. margins, dydx(bp_canada) at(totcredits_year1 age_at_entry hsgrade_pct campus2 
+> campus3 female l_english l_french bp_america bp_asia)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : bp_canada
+at           : totcredits~1    =     4.60735 (mean)
+               hsgrade_pct     =    52.34315 (mean)
+               campus2         =    .1781069 (mean)
+               campus3         =    .2134995 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_english       =    .7170588 (mean)
+               l_french        =     .005003 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_asia         =    .0770176 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   bp_canada |  -.0140049    .014157    -0.99   0.323    -.0417521    .0137424
+------------------------------------------------------------------------------
+
+. margins, dydx(age_at_entry) at(totcredits_year1 hsgrade_pct campus2 campus3 fe
+> male l_english l_french bp_america bp_asia bp_canada)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : age_at_entry
+at           : totcredits~1    =     4.60735 (mean)
+               hsgrade_pct     =    52.34315 (mean)
+               campus2         =    .1781069 (mean)
+               campus3         =    .2134995 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_english       =    .7170588 (mean)
+               l_french        =     .005003 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_asia         =    .0770176 (mean)
+               bp_canada       =    .8783556 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+age_at_entry |  -.0037779    .003895    -0.97   0.332     -.011412    .0038561
+------------------------------------------------------------------------------
+
+. margins, dydx(totcredits_year1) at(hsgrade_pct campus2 campus3 female l_englis
+> h l_french bp_america bp_asia bp_canada age_at_entry)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : totcredits_year1
+at           : hsgrade_pct     =    52.34315 (mean)
+               campus2         =    .1781069 (mean)
+               campus3         =    .2134995 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_english       =    .7170588 (mean)
+               l_french        =     .005003 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_asia         =    .0770176 (mean)
+               bp_canada       =    .8783556 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+-------------------------------------------------------------------------------
+              |            Delta-method
+              |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+totcredits_~1 |   .2218714   .1017292     2.18   0.029     .0224857     .421257
+-------------------------------------------------------------------------------
+
+. 
+. predict above_avg_prohat
+(option pr assumed; Pr(above_avg))
+
+. hist above_avg_prohat
+(bin=45, start=.07380004, width=.01997612)
+
+. graph export "above_avg_probit.png", replace
+(file /Users/andreweeckman/Desktop/above_avg_probit.png written in PNG format)
+
+. ******************************************************************************
+> ************************************
+. 
+. ***** LOGIT REGRESSION *******************************************************
+> ************************************
+. logit above_avg totcredits_year1 hsgrade_pct campus2 campus3 i.female l_englis
+> h l_french bp_america bp_asia bp_canada age_at_entry i.female#c.hsgrade_pct c.
+> age_at_entry#c.hsgrade_pct sq_hsgrade_pct sq_totalcreds
+
+Iteration 0:   log likelihood = -24221.987  
+Iteration 1:   log likelihood = -19532.289  
+Iteration 2:   log likelihood = -19502.651  
+Iteration 3:   log likelihood = -19502.568  
+Iteration 4:   log likelihood = -19502.568  
+
+Logistic regression                             Number of obs     =     34,979
+                                                LR chi2(15)       =    9438.84
+                                                Prob > chi2       =     0.0000
+Log likelihood = -19502.568                     Pseudo R2         =     0.1948
+
+-------------------------------------------------------------------------------
+    above_avg |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+totcredits_~1 |    1.14124   .4742183     2.41   0.016      .211789    2.070691
+  hsgrade_pct |   .0587158   .0125946     4.66   0.000     .0340308    .0834009
+      campus2 |   .2185542    .035147     6.22   0.000     .1496674    .2874411
+      campus3 |   .3027752   .0333414     9.08   0.000     .2374272    .3681232
+     1.female |  -.2178319   .0562279    -3.87   0.000    -.3280367   -.1076272
+    l_english |  -.0072847   .0302188    -0.24   0.810    -.0665125    .0519432
+     l_french |  -.1137073   .1778244    -0.64   0.523    -.4622367    .2348222
+   bp_america |   .5017535   .3002262     1.67   0.095    -.0866791    1.090186
+      bp_asia |  -.0531584   .0748763    -0.71   0.478    -.1999132    .0935965
+    bp_canada |  -.0649497   .0625692    -1.04   0.299    -.1875832    .0576837
+ age_at_entry |   .0830706   .0363878     2.28   0.022     .0117518    .1543894
+              |
+       female#|
+c.hsgrade_pct |
+           1  |  -.0002361   .0010172    -0.23   0.816    -.0022299    .0017576
+              |
+           c. |
+ age_at_entry#|
+c.hsgrade_pct |    -.00192   .0006516    -2.95   0.003    -.0031971   -.0006428
+              |
+sq_hsgrade_~t |   .0001745    .000019     9.21   0.000     .0001374    .0002117
+sq_totalcreds |  -.0807705   .0531333    -1.52   0.128    -.1849098    .0233688
+        _cons |  -6.667005     1.2804    -5.21   0.000    -9.176544   -4.157466
+-------------------------------------------------------------------------------
+
+. 
+. margins, dydx(hsgrade_pct) at(totcredits_year1 campus2 campus3 female l_englis
+> h l_french bp_america bp_asia bp_canada age_at_entry)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : hsgrade_pct
+at           : totcredits~1    =     4.60735 (mean)
+               campus2         =    .1781069 (mean)
+               campus3         =    .2134995 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_english       =    .7170588 (mean)
+               l_french        =     .005003 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_asia         =    .0770176 (mean)
+               bp_canada       =    .8783556 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ hsgrade_pct |   .0044522   .0003848    11.57   0.000     .0036981    .0052063
+------------------------------------------------------------------------------
+
+. margins, dydx(campus2) at(totcredits_year1 campus3 female l_english l_french b
+> p_america bp_asia bp_canada age_at_entry hsgrade_pct)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : campus2
+at           : totcredits~1    =     4.60735 (mean)
+               hsgrade_pct     =    52.34315 (mean)
+               campus3         =    .2134995 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_english       =    .7170588 (mean)
+               l_french        =     .005003 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_asia         =    .0770176 (mean)
+               bp_canada       =    .8783556 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+     campus2 |   .0510718   .0083489     6.12   0.000     .0347083    .0674354
+------------------------------------------------------------------------------
+
+. margins, dydx(campus3) at(totcredits_year1 female l_english l_french bp_americ
+> a bp_asia bp_canada age_at_entry hsgrade_pct campus2)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : campus3
+at           : totcredits~1    =     4.60735 (mean)
+               hsgrade_pct     =    52.34315 (mean)
+               campus2         =    .1781069 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_english       =    .7170588 (mean)
+               l_french        =     .005003 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_asia         =    .0770176 (mean)
+               bp_canada       =    .8783556 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+     campus3 |   .0706814   .0077784     9.09   0.000      .055436    .0859267
+------------------------------------------------------------------------------
+
+. margins, dydx(female) at(totcredits_year1 l_english l_french bp_america bp_asi
+> a bp_canada age_at_entry hsgrade_pct campus2 campus3)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : 1.female
+at           : totcredits~1    =     4.60735 (mean)
+               hsgrade_pct     =    52.34315 (mean)
+               campus2         =    .1781069 (mean)
+               campus3         =    .2134995 (mean)
+               l_english       =    .7170588 (mean)
+               l_french        =     .005003 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_asia         =    .0770176 (mean)
+               bp_canada       =    .8783556 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    1.female |  -.0536173   .0061015    -8.79   0.000    -.0655761   -.0416585
+------------------------------------------------------------------------------
+Note: dy/dx for factor levels is the discrete change from the base level.
+
+. margins, dydx(l_english) at(totcredits_year1 l_french bp_america bp_asia bp_ca
+> nada age_at_entry hsgrade_pct campus2 campus3 female)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : l_english
+at           : totcredits~1    =     4.60735 (mean)
+               hsgrade_pct     =    52.34315 (mean)
+               campus2         =    .1781069 (mean)
+               campus3         =    .2134995 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_french        =     .005003 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_asia         =    .0770176 (mean)
+               bp_canada       =    .8783556 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   l_english |  -.0017007   .0070553    -0.24   0.810    -.0155288    .0121274
+------------------------------------------------------------------------------
+
+. margins, dydx(l_french) at(totcredits_year1 bp_america bp_asia bp_canada age_a
+> t_entry hsgrade_pct campus2 campus3 female l_english)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : l_french
+at           : totcredits~1    =     4.60735 (mean)
+               hsgrade_pct     =    52.34315 (mean)
+               campus2         =    .1781069 (mean)
+               campus3         =    .2134995 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_english       =    .7170588 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_asia         =    .0770176 (mean)
+               bp_canada       =    .8783556 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    l_french |  -.0265484   .0415168    -0.64   0.523    -.1079198     .054823
+------------------------------------------------------------------------------
+
+. margins, dydx(bp_america) at(totcredits_year1 bp_asia bp_canada age_at_entry h
+> sgrade_pct campus2 campus3 female l_english l_french)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : bp_america
+at           : totcredits~1    =     4.60735 (mean)
+               hsgrade_pct     =    52.34315 (mean)
+               campus2         =    .1781069 (mean)
+               campus3         =    .2134995 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_english       =    .7170588 (mean)
+               l_french        =     .005003 (mean)
+               bp_asia         =    .0770176 (mean)
+               bp_canada       =    .8783556 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+  bp_america |   .1171373   .0701012     1.67   0.095    -.0202585    .2545332
+------------------------------------------------------------------------------
+
+. margins, dydx(bp_asia) at(totcredits_year1 bp_canada age_at_entry hsgrade_pct 
+> campus2 campus3 female l_english l_french bp_america)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : bp_asia
+at           : totcredits~1    =     4.60735 (mean)
+               hsgrade_pct     =    52.34315 (mean)
+               campus2         =    .1781069 (mean)
+               campus3         =    .2134995 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_english       =    .7170588 (mean)
+               l_french        =     .005003 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_canada       =    .8783556 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+     bp_asia |  -.0124144   .0174907    -0.71   0.478    -.0466955    .0218666
+------------------------------------------------------------------------------
+
+. margins, dydx(bp_canada) at(totcredits_year1 age_at_entry hsgrade_pct campus2 
+> campus3 female l_english l_french bp_america bp_asia)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : bp_canada
+at           : totcredits~1    =     4.60735 (mean)
+               hsgrade_pct     =    52.34315 (mean)
+               campus2         =    .1781069 (mean)
+               campus3         =    .2134995 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_english       =    .7170588 (mean)
+               l_french        =     .005003 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_asia         =    .0770176 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   bp_canada |  -.0151576   .0145982    -1.04   0.299    -.0437695    .0134544
+------------------------------------------------------------------------------
+
+. margins, dydx(age_at_entry) at(totcredits_year1 hsgrade_pct campus2 campus3 fe
+> male l_english l_french bp_america bp_asia bp_canada)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : age_at_entry
+at           : totcredits~1    =     4.60735 (mean)
+               hsgrade_pct     =    52.34315 (mean)
+               campus2         =    .1781069 (mean)
+               campus3         =    .2134995 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_english       =    .7170588 (mean)
+               l_french        =     .005003 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_asia         =    .0770176 (mean)
+               bp_canada       =    .8783556 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+age_at_entry |   -.004068   .0040319    -1.01   0.313    -.0119704    .0038343
+------------------------------------------------------------------------------
+
+. margins, dydx(totcredits_year1) at(hsgrade_pct campus2 campus3 female l_englis
+> h l_french bp_america bp_asia bp_canada age_at_entry)
+
+Average marginal effects                        Number of obs     =     34,979
+Model VCE    : OIM
+
+Expression   : Pr(above_avg), predict()
+dy/dx w.r.t. : totcredits_year1
+at           : hsgrade_pct     =    52.34315 (mean)
+               campus2         =    .1781069 (mean)
+               campus3         =    .2134995 (mean)
+               0.female        =    .3739958 (mean)
+               1.female        =    .6260042 (mean)
+               l_english       =    .7170588 (mean)
+               l_french        =     .005003 (mean)
+               bp_america      =    .0018583 (mean)
+               bp_asia         =    .0770176 (mean)
+               bp_canada       =    .8783556 (mean)
+               age_at_entry    =    18.63504 (mean)
+
+-------------------------------------------------------------------------------
+              |            Delta-method
+              |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+totcredits_~1 |   .2604005   .1081099     2.41   0.016     .0485089    .4722921
+-------------------------------------------------------------------------------
+
+. 
+. predict above_avg_lohat
+(option pr assumed; Pr(above_avg))
+
+. hist above_avg_lohat
+(bin=45, start=.08213381, width=.01949214)
+
+. graph export "above_avg_logit.png", replace
+(file /Users/andreweeckman/Desktop/above_avg_logit.png written in PNG format)
+
+. ******************************************************************************
+> ************************************
+. 
+. 
+. * The effect of having a higher high school gpa is different if a person is ma
+> le or female. The slopes of the regression lines between GPA and hsgrade_pct a
+> re different for different genders. 
+. 
+. log close
+      name:  <unnamed>
+       log:  /Users/andreweeckman/Documents/Stata/mylog.log
+  log type:  text
+ closed on:   3 Jun 2020, 14:08:00
+--------------------------------------------------------------------------------
